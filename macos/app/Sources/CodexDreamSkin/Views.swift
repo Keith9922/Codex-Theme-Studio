@@ -36,7 +36,7 @@ struct StatusHeader: View {
     HStack(spacing: compact ? 10 : 13) {
       BrandMark(size: compact ? 34 : 42)
       VStack(alignment: .leading, spacing: 2) {
-        Text("CODEX DREAM SKIN")
+        Text("CODEX THEME STUDIO")
           .font(.system(size: compact ? 11 : 12, weight: .bold, design: .rounded))
           .tracking(1.1)
           .foregroundStyle(StudioColors.text)
@@ -188,10 +188,23 @@ struct MenuContentView: View {
       }
 
       VStack(alignment: .leading, spacing: 7) {
-        Text("快速切换")
-          .font(.system(size: 10, weight: .bold))
-          .tracking(0.8)
+        HStack {
+          Text("快速切换")
+            .font(.system(size: 10, weight: .bold))
+            .tracking(0.8)
+            .foregroundStyle(StudioColors.muted)
+          Spacer()
+          Button {
+            controller.refreshThemeLibrary()
+          } label: {
+            Image(systemName: "arrow.clockwise")
+          }
+          .buttonStyle(.plain)
           .foregroundStyle(StudioColors.muted)
+          .disabled(controller.isBusy)
+          .help("刷新皮肤数据并扫描已有主题资产")
+          .accessibilityLabel("刷新皮肤数据")
+        }
         ScrollView {
           LazyVStack(spacing: 3) {
             ForEach(controller.themes) { theme in
@@ -542,6 +555,14 @@ struct SettingsView: View {
           }
           Spacer()
           SearchField(text: $searchText)
+          Button {
+            controller.refreshThemeLibrary()
+          } label: {
+            Label("刷新皮肤", systemImage: "arrow.clockwise")
+          }
+          .buttonStyle(StudioSecondaryButtonStyle())
+          .disabled(controller.isBusy || !controller.engineAvailable)
+          .help("重新扫描内置主题与本机主题库")
           Button("导入图片") { controller.importBackground() }
             .buttonStyle(StudioSecondaryButtonStyle())
           Button("打开目录") { controller.openThemeFolder() }
@@ -555,6 +576,13 @@ struct SettingsView: View {
         }
         .pickerStyle(.segmented)
         .frame(maxWidth: 440)
+
+        if let summary = controller.themeRefreshSummary {
+          Label(summary, systemImage: "checkmark.circle.fill")
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(StudioColors.mint)
+            .accessibilityLabel(summary)
+        }
 
         if filteredThemes.isEmpty {
           StudioPanel {
@@ -586,7 +614,7 @@ struct SettingsView: View {
         }
 
         HStack(spacing: 9) {
-          Button("刷新状态") { controller.refreshNow() }
+          Button("刷新运行状态") { controller.refreshNow() }
           Button("修复并重新应用") { controller.repair() }
           Button("打开日志") { controller.openLogsFolder() }
           Spacer()

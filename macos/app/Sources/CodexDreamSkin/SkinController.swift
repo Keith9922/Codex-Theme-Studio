@@ -12,6 +12,7 @@ final class SkinController: ObservableObject {
   @Published private(set) var isBusy = false
   @Published private(set) var progressMessage = ""
   @Published private(set) var lastError: String?
+  @Published private(set) var themeRefreshSummary: String?
   @Published private(set) var engineAvailable = true
   @Published private(set) var loginItemState: LoginItemState = .disabled
   @Published var autoOpenCodex: Bool {
@@ -122,9 +123,12 @@ final class SkinController: ObservableObject {
 
   func refreshNow() {
     Task {
-      await refreshThemes()
       await refreshStatus(deep: true)
     }
+  }
+
+  func refreshThemeLibrary() {
+    Task { await scanThemeLibrary() }
   }
 
   func repair() {
@@ -298,6 +302,30 @@ final class SkinController: ObservableObject {
       themes = try engine.loadThemes()
     } catch {
       lastError = "无法读取主题库：\(error.localizedDescription)"
+    }
+  }
+
+  private func scanThemeLibrary() async {
+    guard let engine, !isBusy else { return }
+    let previousIDs = Set(themes.map(\.id))
+
+    await runOperation(message: "正在扫描已有皮肤资产…") {
+      _ = try await engine.run(
+        script: "manager-command-macos.sh",
+        arguments: ["seed-library"]
+      )
+    }
+    guard lastError == nil else { return }
+
+    await refreshThemes()
+    guard lastError == nil else { return }
+    await refreshStatus(deep: true)
+
+    let discovered = Set(themes.map(\.id)).subtracting(previousIDs).count
+    if discovered > 0 {
+      themeRefreshSummary = "找到 \(discovered) 套新皮肤，主题库现有 \(themes.count) 套"
+    } else {
+      themeRefreshSummary = "主题库已刷新，共找到 \(themes.count) 套皮肤"
     }
   }
 

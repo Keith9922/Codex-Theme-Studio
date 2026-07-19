@@ -21,6 +21,7 @@ Codex/skin lifecycle. It provides:
 
 - one skin on/off switch with a single authorized Codex restart;
 - searchable, categorized theme cards and hot switching while the skin is active;
+- one-click refresh that re-seeds bundled presets and rescans the local theme library;
 - background-image import, status repair, and log access;
 - a system Login Item toggle backed by `SMAppService`;
 - optional one-time takeover when Codex was opened normally without CDP;

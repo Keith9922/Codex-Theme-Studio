@@ -40,6 +40,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
 
     NSApplication.shared.activate(ignoringOtherApps: true)
     settingsWindow.makeKeyAndOrderFront(nil)
+    SkinController.shared.refreshThemeLibrary()
   }
 
   func windowWillClose(_ notification: Notification) {
