@@ -59,7 +59,6 @@ export default function InstallActions() {
     }
 
     void updateDevice();
-
     return () => {
       active = false;
     };
@@ -76,28 +75,31 @@ export default function InstallActions() {
   }
 
   return (
-    <div className="install-grid">
-      <article className="install-card download-card">
-        <span className="card-label">APP</span>
-        <h2>安装主题管理器</h2>
-        <p className="device" aria-live="polite">{device}</p>
+    <div className="action-console">
+      <div className="device-row">
+        <span className="device-status"><i aria-hidden="true" />{device}</span>
+        <span>v1.4.3 · Universal 2</span>
+      </div>
+      <div className="action-row">
         <a className="download-button" href={appDownloadUrl}>
-          下载 macOS App <span aria-hidden="true">↓</span>
+          <span>下载 macOS App</span>
+          <i aria-hidden="true">↓</i>
         </a>
-        <small>直接下载 v1.4.3 · Universal 2</small>
-      </article>
-
-      <article className="install-card skill-card">
-        <span className="card-label">THEME SKILL</span>
-        <h2>把链接交给 AI</h2>
-        <div className="skill-link">
-          <code>{skillUrl}</code>
-          <button type="button" onClick={copySkillLink} aria-live="polite">
-            {copied ? "已复制" : "复制链接"}
-          </button>
-        </div>
-        <p>复制后告诉 AI：“安装这个 Skill，然后帮我制作一套喜欢的 Codex 主题。”</p>
-      </article>
+        <button
+          className={`copy-button${copied ? " is-copied" : ""}`}
+          type="button"
+          onClick={copySkillLink}
+          aria-live="polite"
+        >
+          <span aria-hidden="true">{copied ? "✓" : "⌘"}</span>
+          {copied ? "Skill 链接已复制" : "复制 Skill 链接"}
+        </button>
+      </div>
+      <div className="skill-line">
+        <span>SKILL</span>
+        <code>{skillUrl}</code>
+      </div>
+      <p>复制后交给 AI：“安装这个 Skill，然后帮我制作一套喜欢的 Codex 主题。”</p>
     </div>
   );
 }
