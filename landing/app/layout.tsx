@@ -24,11 +24,11 @@ export async function generateMetadata(): Promise<Metadata> {
     (host.startsWith("localhost") ? "http" : "https");
   const metadataBase = new URL(`${protocol}://${host}`);
   const description =
-    "原生 macOS Codex 主题管理器与制皮 Skill。一句话生成、自动安装、App 直接识别并自由切换多套主题。";
+    "下载 macOS App，复制 Theme Skill 链接给 AI，制作、导入并切换 Codex Desktop 主题。";
 
   return {
     metadataBase,
-    title: "Codex Theme Studio — 一句话生成并切换 Codex 主题",
+    title: "Codex Theme Studio — Codex 桌面主题管理器",
     description,
     keywords: [
       "Codex",
@@ -46,20 +46,20 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       title: "Codex Theme Studio",
-      description: "一句话生成，自动安装，随意切换多个 Codex 主题。",
+      description: "Codex Desktop 主题管理器。下载 App，复制 Skill 链接给 AI。",
       images: [
         {
           url: "/og.png",
-          width: 1730,
-          height: 909,
-          alt: "Codex Theme Studio — One sentence. Infinite themes.",
+          width: 1731,
+          height: 908,
+          alt: "Codex Theme Studio — Theme manager for Codex Desktop.",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
       title: "Codex Theme Studio",
-      description: "一句话生成，自动安装，随意切换多个 Codex 主题。",
+      description: "Codex Desktop 主题管理器。下载 App，复制 Skill 链接给 AI。",
       images: ["/og.png"],
     },
   };

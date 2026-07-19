@@ -34,10 +34,15 @@ test("renders the product landing page and share metadata", async () => {
 
   const html = await response.text();
   assert.match(html, /Codex Theme Studio/);
-  assert.match(html, /一句话/);
-  assert.match(html, /create-codex-theme/);
-  assert.match(html, /刷新皮肤/);
+  assert.match(html, /给 Codex/);
+  assert.match(html, /复制链接/);
+  assert.match(html, /直接下载 v1\.4\.3/);
+  assert.match(html, /releases\/download\/v1\.4\.3/);
+  assert.match(html, /tree\/main\/skills\/create-codex-theme/);
   assert.match(html, /非官方项目/);
   assert.match(html, /og\.png/);
-  assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
+  assert.doesNotMatch(
+    html,
+    /完整世界|PRODUCT CAPABILITIES|ONE CONFIG|127\.0\.0\.1|获取制皮 Skill|下载 Skill|codex-preview|Your site is taking shape/,
+  );
 });

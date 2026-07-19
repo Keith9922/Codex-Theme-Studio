@@ -9,9 +9,28 @@
 - 已安装 Codex Theme Studio App
 - Codex 中可用的图像生成能力；纯色与渐变主题不需要图像生成
 
-App 与 Skill 均可从 [最新 Release](https://github.com/Keith9922/Codex-Theme-Studio/releases/latest) 下载。
+App 可从 [产品页](https://codex-theme-studio.zhangrg9922.chatgpt.site) 直接下载；Skill 推荐通过下面的仓库链接交给 AI 安装。
 
-## 安装 Skill
+## 让 AI 帮你安装
+
+复制下面这个链接：
+
+```text
+https://github.com/Keith9922/Codex-Theme-Studio/tree/main/skills/create-codex-theme
+```
+
+把链接和要求一起发给 Codex 或其他能访问 GitHub、本机文件和终端的编程 AI：
+
+```text
+请安装这个 Skill，然后帮我制作一套低饱和森林风格的 Codex 主题，生成后导入 Codex Theme Studio。
+```
+
+AI 应下载完整的 `create-codex-theme` 目录，将它安装到
+`~/.codex/skills/create-codex-theme`，再按照 `SKILL.md` 制作和导入主题。
+
+## 手动安装
+
+如果当前 AI 无法访问 GitHub 或本机文件，也可以手动安装：
 
 1. 下载 `create-codex-theme-skill-*.zip` 并解压。
 2. 把整个 `create-codex-theme` 文件夹复制到：
