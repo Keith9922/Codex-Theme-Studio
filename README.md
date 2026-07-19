@@ -32,7 +32,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest"><strong>下载最新版</strong></a>
+  <a href="https://codex-theme-studio.zhangrg9922.chatgpt.site"><strong>产品官网</strong></a>
+  · <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest"><strong>下载最新版</strong></a>
   · <a href="#一分钟开始">安装指南</a>
   · <a href="./skills/create-codex-theme/SKILL.md">制皮 Skill</a>
   · <a href="./README.en.md">English</a>

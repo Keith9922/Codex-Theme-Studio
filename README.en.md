@@ -18,7 +18,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest"><strong>Download the latest release</strong></a>
+  <a href="https://codex-theme-studio.zhangrg9922.chatgpt.site"><strong>Product site</strong></a>
+  · <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest"><strong>Download the latest release</strong></a>
   · <a href="./macos/README.md">Documentation</a>
   · <a href="./skills/create-codex-theme/SKILL.md">Theme creation Skill</a>
 </p>
