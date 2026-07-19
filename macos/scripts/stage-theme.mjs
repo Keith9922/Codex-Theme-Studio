@@ -9,6 +9,7 @@ if (!sourceDirArg || !stageDirArg) {
 
 const MAX_CONFIG_BYTES = 1024 * 1024;
 const MAX_IMAGE_BYTES = 16 * 1024 * 1024;
+const MAX_DECORATIONS = 3;
 const OPEN_FLAGS = fsConstants.O_RDONLY | (fsConstants.O_NOFOLLOW ?? 0);
 
 function assertContained(rootPath, candidatePath, label) {
@@ -63,6 +64,22 @@ function decodeJson(bytes, label) {
   }
 }
 
+function validateAssetName(value, label) {
+  if (typeof value !== "string" || !value) {
+    throw new Error(`${label} must be a non-empty filename`);
+  }
+  if (path.basename(value) !== value || value === "theme.json") {
+    throw new Error(`${label} must stay inside its theme directory`);
+  }
+  if (/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/u.test(value)) {
+    throw new Error(`${label} contains control characters`);
+  }
+  if (!/\.(?:png|jpe?g|webp)$/i.test(value)) {
+    throw new Error(`${label} has an unsupported image format`);
+  }
+  return value;
+}
+
 async function writeExclusive(filePath, bytes) {
   const temporary = `${filePath}.${process.pid}.tmp`;
   try {
@@ -84,31 +101,47 @@ async function main() {
   if (theme?.schemaVersion !== 1 || typeof theme.image !== "string" || !theme.image) {
     throw new Error("Theme config has an unsupported schema or image field");
   }
-  if (path.basename(theme.image) !== theme.image) {
-    throw new Error("Theme image must stay inside its theme directory");
+  validateAssetName(theme.image, "Theme image");
+  if (theme.decorations !== undefined && !Array.isArray(theme.decorations)) {
+    throw new Error("Theme decorations must be an array");
   }
-  if (theme.image === "theme.json") {
-    throw new Error("Theme image must not replace theme.json");
-  }
-  if (/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/u.test(theme.image)) {
-    throw new Error("Theme image contains control characters");
+  if ((theme.decorations?.length ?? 0) > MAX_DECORATIONS) {
+    throw new Error(`Theme decorations must contain at most ${MAX_DECORATIONS} items`);
   }
 
-  const imagePath = path.resolve(sourceRoot, theme.image);
-  assertContained(sourceRoot, imagePath, "Theme image");
-  const image = await readStableFile(imagePath, "Theme image", MAX_IMAGE_BYTES);
-  if (image.bytes.length < 1) throw new Error("Theme image is empty");
+  const assetNames = [theme.image];
+  for (const [index, decoration] of (theme.decorations ?? []).entries()) {
+    if (!decoration || typeof decoration !== "object" || Array.isArray(decoration)) {
+      throw new Error(`Theme decoration ${index + 1} must be an object`);
+    }
+    assetNames.push(validateAssetName(decoration.image, `Theme decoration ${index + 1}`));
+  }
+  if (new Set(assetNames).size !== assetNames.length) {
+    throw new Error("Theme asset filenames must be unique");
+  }
+
+  const assets = [];
+  for (const [index, assetName] of assetNames.entries()) {
+    const label = index === 0 ? "Theme image" : `Theme decoration ${index}`;
+    const assetPath = path.resolve(sourceRoot, assetName);
+    assertContained(sourceRoot, assetPath, label);
+    const asset = await readStableFile(assetPath, label, MAX_IMAGE_BYTES);
+    if (asset.bytes.length < 1) throw new Error(`${label} is empty`);
+    assets.push({ name: assetName, bytes: asset.bytes });
+  }
 
   const stageRoot = await fs.realpath(stageDirArg);
   const stageStat = await fs.stat(stageRoot);
   if (!stageStat.isDirectory()) throw new Error("Theme stage must be a directory");
   assertContained(stageRoot, path.join(stageRoot, "theme.json"), "Staged theme config");
-  assertContained(stageRoot, path.join(stageRoot, theme.image), "Staged theme image");
 
-  // Write both files from the already-open, stable descriptors. The caller
-  // publishes the image first and theme.json last, so the watcher only ever
-  // observes a complete pair; subsequent source edits cannot race the copy.
-  await writeExclusive(path.join(stageRoot, theme.image), image.bytes);
+  // Write every referenced asset from already-open, stable descriptors. The
+  // caller publishes assets first and theme.json last, so the watcher only
+  // observes a complete pack; subsequent source edits cannot race the copy.
+  for (const asset of assets) {
+    assertContained(stageRoot, path.join(stageRoot, asset.name), "Staged theme asset");
+    await writeExclusive(path.join(stageRoot, asset.name), asset.bytes);
+  }
   await writeExclusive(path.join(stageRoot, "theme.json"), config.bytes);
   process.stdout.write(theme.image);
 }

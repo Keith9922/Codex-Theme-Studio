@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-wild-museum",
+  "name": "野生博物",
+  "brandSubtitle": "CODEX DREAM SKIN",
+  "tagline": "标本柜般的深橄榄色，配一束克制的赭金光。",
+  "projectPrefix": "选择项目",
+  "projectLabel": "◉  选择项目",
+  "statusText": "DREAM SKIN ONLINE",
+  "quote": "COLLECT IDEAS, BUILD WORLDS",
+  "image": "background.jpg",
+  "catalog": {
+    "category": "solid",
+    "description": "标本柜般的深橄榄色，配一束克制的赭金光。",
+    "tags": [
+      "纯色",
+      "深色",
+      "博物馆",
+      "橄榄绿",
+      "赭石",
+      "自然"
+    ],
+    "featured": true,
+    "source": "bundled"
+  },
+  "colors": {
+    "background": "#14160f",
+    "panel": "#202318",
+    "panelAlt": "#2b2c1f",
+    "accent": "#c7a56a",
+    "accentAlt": "#dec28d",
+    "secondary": "#879455",
+    "highlight": "#d58942",
+    "text": "#f3edda",
+    "muted": "#aaa58d",
+    "line": "rgba(199, 165, 106, .24)"
+  },
+  "promoTitle": "感谢 Passion8 赞助",
+  "promoSub": "passion8.cc",
+  "promoUrl": "https://passion8.cc/register?aff=TuPe"
+}

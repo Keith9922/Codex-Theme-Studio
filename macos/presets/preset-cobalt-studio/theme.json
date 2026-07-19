@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-cobalt-studio",
+  "name": "钴蓝工坊",
+  "brandSubtitle": "CODEX DREAM SKIN",
+  "tagline": "深钴蓝铺满工作台，只保留一笔清亮的电光蓝。",
+  "projectPrefix": "选择项目",
+  "projectLabel": "◉  选择项目",
+  "statusText": "DREAM SKIN ONLINE",
+  "quote": "SHAPE THE SIGNAL",
+  "image": "background.jpg",
+  "catalog": {
+    "category": "solid",
+    "description": "深钴蓝铺满工作台，只保留一笔清亮的电光蓝。",
+    "tags": [
+      "纯色",
+      "深色",
+      "钴蓝",
+      "冷色",
+      "极简"
+    ],
+    "featured": false,
+    "source": "bundled"
+  },
+  "colors": {
+    "background": "#0a1322",
+    "panel": "#101f36",
+    "panelAlt": "#172d4c",
+    "accent": "#58a6ff",
+    "accentAlt": "#89c2ff",
+    "secondary": "#376fd2",
+    "highlight": "#7cc8ff",
+    "text": "#edf6ff",
+    "muted": "#90a9c3",
+    "line": "rgba(88, 166, 255, .24)"
+  },
+  "promoTitle": "感谢 Passion8 赞助",
+  "promoSub": "passion8.cc",
+  "promoUrl": "https://passion8.cc/register?aff=TuPe"
+}

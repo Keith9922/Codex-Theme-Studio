@@ -33,9 +33,16 @@ try {
   await fs.mkdir(source, { recursive: true });
   await fs.mkdir(stage);
   await fs.copyFile(fixtureAsset, path.join(source, "background-a.png"));
+  await fs.copyFile(fixtureAsset, path.join(source, "badge.png"));
   await fs.writeFile(
     path.join(source, "theme.json"),
-    `${JSON.stringify({ schemaVersion: 1, id: "preset-race", name: "A", image: "background-a.png" })}\n`,
+    `${JSON.stringify({
+      schemaVersion: 1,
+      id: "preset-race",
+      name: "A",
+      image: "background-a.png",
+      decorations: [{ image: "badge.png", slot: "badge", routes: "home", opacity: 0.9 }],
+    })}\n`,
   );
 
   const imageName = await runStage(source, stage);
@@ -43,6 +50,8 @@ try {
   const stagedConfig = JSON.parse(await fs.readFile(path.join(stage, "theme.json"), "utf8"));
   assert.equal(stagedConfig.image, "background-a.png");
   const stagedBeforeMutation = await fs.readFile(path.join(stage, "background-a.png"));
+  const stagedBadgeBeforeMutation = await fs.readFile(path.join(stage, "badge.png"));
+  assert.deepEqual(stagedBadgeBeforeMutation, await fs.readFile(path.join(source, "badge.png")));
 
   // A source edit after staging must not change the pair that is about to be
   // published. This is the regression for switch-theme's old copy-after-
@@ -53,7 +62,9 @@ try {
     `${JSON.stringify({ schemaVersion: 1, id: "preset-race", name: "B", image: "background-b.png" })}\n`,
   );
   await fs.writeFile(path.join(source, "background-a.png"), Buffer.from("changed-after-stage"));
+  await fs.writeFile(path.join(source, "badge.png"), Buffer.from("changed-after-stage"));
   assert.deepEqual(await fs.readFile(path.join(stage, "background-a.png")), stagedBeforeMutation);
+  assert.deepEqual(await fs.readFile(path.join(stage, "badge.png")), stagedBadgeBeforeMutation);
   assert.equal(JSON.parse(await fs.readFile(path.join(stage, "theme.json"), "utf8")).name, "A");
 
   const outside = path.join(tempRoot, "outside.png");

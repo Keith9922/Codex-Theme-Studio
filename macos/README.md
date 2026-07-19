@@ -10,9 +10,55 @@ This project injects through **local loopback CDP**. It does **not** modify the 
 
 ## Requirements
 
-- macOS
+- macOS 13 or newer for the native menu bar app
 - Official Codex Desktop installed and launched at least once (`~/.codex/config.toml` exists)
 - No global Node.js install required (uses Codex’s signed bundled Node after validation)
+
+## Native menu bar app
+
+Version 1.4 ships a standalone SwiftUI theme workbench that owns the
+Codex/skin lifecycle. It provides:
+
+- one skin on/off switch with a single authorized Codex restart;
+- searchable, categorized theme cards and hot switching while the skin is active;
+- background-image import, status repair, and log access;
+- a system Login Item toggle backed by `SMAppService`;
+- optional one-time takeover when Codex was opened normally without CDP;
+- a 90-second automatic retry breaker and strict respect for manual Codex quit.
+
+Build and install it locally:
+
+```bash
+./app/scripts/build-app-macos.sh
+./app/scripts/install-app-macos.sh
+```
+
+The signed local app is installed at
+`~/Applications/Codex Dream Skin.app`. Its bundle contains the complete engine,
+so it does not depend on SwiftBar or a global Node installation. The manager
+migrates the old one-shot Dream Skin LaunchAgent and the exact legacy SwiftBar
+plugin filename on first launch.
+
+## Theme catalog and Skill
+
+The catalog CLI searches both bundled packs and the user's existing theme
+library, so local themes remain discoverable:
+
+```bash
+./scripts/theme-catalog.mjs search --query "赛博"
+./scripts/theme-catalog.mjs install --id preset-cyber-neon
+./scripts/theme-catalog.mjs create-solid \
+  --id custom-deep-ocean --name "深海控制室" \
+  --primary "#071521" --secondary "#123B52" --accent "#4DE2C5" \
+  --install
+```
+
+The repository also includes the installable
+[`create-codex-dream-skin`](../skills/create-codex-dream-skin/SKILL.md) Skill.
+Invoke it with a desired color, atmosphere, character, or composition. It first
+searches existing skins, then generates only when no suitable match exists,
+validates the result, and imports it without restarting Codex unless explicitly
+authorized.
 
 ## Quick start (from this repo)
 
@@ -59,7 +105,7 @@ That ZIP contains a visible installer plus a hidden `.codex-dream-skin-studio` e
 ## How it works (security boundary)
 
 1. Discover `com.openai.codex` and validate signature / Team ID / arch / bundled Node.
-2. Start Codex via user `launchd` with CDP bound to `127.0.0.1` only.
+2. Start Codex as a normal user process with CDP bound to `127.0.0.1` only.
 3. Accept the debug port only when it belongs to Codex (or a legitimate child).
 4. Inject only into expected `app://` renderer targets.
 5. Resolve the selected theme and image to real paths, then enforce 16 MB,
@@ -74,9 +120,9 @@ CDP is powerful and unauthenticated on loopback. Prefer Restore when you are don
 
 ## Bundled presets
 
-A fresh install seeds two tested presets into your theme library:
-**Gothic Void Crusade** and **桥本有菜 / Arina Hashimoto**. Gothic Void Crusade
-is the default when no active theme exists. Switch to Arina Hashimoto with:
+A fresh install seeds two tested presets plus nine procedural abstract/solid
+presets into your theme library. **Gothic Void Crusade** remains the default
+when no active theme exists. Switch to **桥本有菜 / Arina Hashimoto** with:
 
 ```bash
 ~/.codex/codex-dream-skin-studio/scripts/switch-theme-macos.sh --id preset-arina-hashimoto
@@ -93,9 +139,18 @@ background. The artwork is a user-provided AI-generated example, not an
 official OpenAI/Codex visual or endorsement; confirm likeness and asset rights
 before redistributing it.
 
-Seeding is idempotent. Upgrades remove only retired bundled preset IDs; your
-own `custom-*` themes from “换一张图” and the currently active theme copy are
-never touched.
+The nine zero-IP presets — **午夜极光 / 樱粉晨曦 / 琥珀黄昏 / 森野薄雾 /
+赛博霓虹 / 野生博物 / 钴蓝工坊 / 朱砂信号 / 瓷白纸页** — are generated
+procedurally (pure Node + zlib, no photos, no third-party art or likeness) by
+`presets/generate-presets.mjs`. Apply one directly, for example:
+
+```bash
+~/.codex/codex-dream-skin-studio/scripts/switch-theme-macos.sh --id preset-midnight-aurora
+```
+
+Seeding is idempotent and refreshes only bundled `preset-*` packs. Your own
+`custom-*` themes from “换一张图” and the currently active theme copy are never
+touched.
 
 To contribute a preset, see [`presets/README.md`](./presets/README.md).
 

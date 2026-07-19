@@ -86,6 +86,11 @@ assert.match(
   "The renderer should give the current native home utility bar a stable theme class.",
 );
 assert.match(
+  template,
+  /projectPrefix[\s\S]{0,120}\.replace\(\/\\s\*\[·•:：\|\/\]\+\\s\*\$\/u,\s*""\)/,
+  "Legacy project labels should drop trailing decorative punctuation before entering the structured picker.",
+);
+assert.match(
   css,
   /\.dream-skin-home:has\(\.dream-skin-home-utility\)[\s\S]{0,120}\.composer-surface-chrome\s*\{[\s\S]{0,180}border-radius:\s*0 0 22px 22px !important;/,
   "The home utility bar and composer should render as one continuous control.",
@@ -129,6 +134,36 @@ assert.match(
   css,
   /\[class~="bg-token-main-surface-primary"\]\[class~="h-full"\]\[class~="w-full"\][\s\S]{0,100}background:\s*transparent !important;/,
   "Full-size utility route wrappers should not hide the selected artwork.",
+);
+assert.match(
+  css,
+  /\.dream-skin-decoration[\s\S]{0,220}pointer-events:\s*none;/,
+  "Custom image decorations must never intercept native Codex controls.",
+);
+assert.match(
+  css,
+  /#codex-dream-skin-chrome\.dream-skin-home-shell[\s\S]{0,260}data-routes="home"/,
+  "Home-only decorations must be route gated.",
+);
+assert.match(
+  css,
+  /\[data-feature="game-source"\] button\s*\{[\s\S]{0,220}display:\s*inline-flex;[\s\S]{0,220}border-radius:\s*11px;/,
+  "The inline project picker should look and size itself like a deliberate control.",
+);
+assert.match(
+  css,
+  /\[data-feature="game-source"\] button:focus-visible\s*\{[\s\S]{0,120}outline:\s*2px solid/,
+  "The inline project picker must retain a visible keyboard focus state.",
+);
+assert.match(
+  css,
+  /home-suggestions button > span:first-child > span:first-child\s*\{[\s\S]{0,220}box-sizing:\s*border-box;[\s\S]{0,160}flex:\s*0 0 40px;/,
+  "Suggestion icons should use a stable, non-shrinking alignment box.",
+);
+assert.match(
+  css,
+  /home-suggestions button svg\s*\{[\s\S]{0,180}left:\s*50% !important;[\s\S]{0,180}top:\s*50% !important;[\s\S]{0,260}transform:\s*translate\(-50%, -50%\) !important;/,
+  "Suggestion glyphs should be centered independently of native icon offsets.",
 );
 
 function createStyleDeclaration() {
@@ -381,6 +416,27 @@ assert.equal(defaultMetrics.layoutReads, 2, "Shell ResizeObserver changes must r
 const defaultChrome = defaults.nodes.get("codex-dream-skin-chrome");
 assert.equal(defaultChrome.style.values.get("left"), "196px");
 assert.equal(defaultChrome.style.values.get("width"), "1084px");
+
+const decorated = createFixture({
+  id: "decorated-contract",
+  appearance: "dark",
+  art: { safeArea: "left", taskMode: "ambient" },
+  decorations: [{
+    image: "badge.png",
+    slot: "badge",
+    routes: "home",
+    opacity: 0.9,
+    dataUrl: "data:image/png;base64,AA==",
+  }],
+});
+vm.runInNewContext(decorated.payload, decorated.context);
+assert.match(
+  decorated.nodes.get("codex-dream-skin-chrome").innerHTML,
+  /class="dream-skin-decoration"[\s\S]*data-slot="badge"[\s\S]*data-routes="home"/,
+);
+assert.equal(decorated.window.__CODEX_DREAM_SKIN_STATE__.decorationUrls.length, 1);
+assert.equal(decorated.window.__CODEX_DREAM_SKIN_STATE__.cleanup(), true);
+assert.deepEqual(decorated.revokedUrls, ["blob:fixture-1", "blob:fixture-2"]);
 
 // Auto appearance must continue following the native shell after the skin is
 // already installed. The fixture makes the injected root color-scheme win

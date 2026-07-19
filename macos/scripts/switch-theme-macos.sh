@@ -91,8 +91,21 @@ done
 # theme.json is the commit marker: the watcher never observes a config that
 # references a partially copied image.
 /bin/mv -f "$stage/theme.json" "$THEME_DIR/theme.json"
-/usr/bin/find "$THEME_DIR" -maxdepth 1 -type f \
-  ! -name 'theme.json' ! -name "$THEME_IMAGE" -delete
+THEME_DECORATIONS="$("$NODE" -e '
+  const theme = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+  process.stdout.write((theme.decorations || []).map((item) => item.image).join("\n"));
+' "$THEME_DIR/theme.json")"
+for entry in "$THEME_DIR/"*; do
+  [ -f "$entry" ] || continue
+  entry_name="$(/usr/bin/basename "$entry")"
+  [ "$entry_name" = "theme.json" ] && continue
+  [ "$entry_name" = "$THEME_IMAGE" ] && continue
+  if [ -n "$THEME_DECORATIONS" ] \
+    && /usr/bin/printf '%s\n' "$THEME_DECORATIONS" | /usr/bin/grep -F -x -q -- "$entry_name"; then
+    continue
+  fi
+  /bin/rm -f "$entry"
+done
 /bin/rm -rf "$stage"
 stage=""
 

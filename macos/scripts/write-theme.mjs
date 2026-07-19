@@ -151,7 +151,7 @@ const custom = {
   name: name || "我的 Codex Dream Skin",
   brandSubtitle: "CODEX DREAM SKIN",
   tagline: tagline || "把喜欢的画面变成可交互的 Codex 工作台。",
-  projectPrefix: "选择项目 · ",
+  projectPrefix: "选择项目",
   projectLabel: "◉  选择项目",
   statusText: "DREAM SKIN ONLINE",
   quote: quote || "MAKE SOMETHING WONDERFUL",

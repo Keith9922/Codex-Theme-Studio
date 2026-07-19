@@ -1,0 +1,71 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+
+find_engine() {
+  local candidate=""
+  for candidate in \
+    "${CODEX_DREAM_SKIN_ENGINE:-}" \
+    "/Applications/Codex Dream Skin.app/Contents/Resources/engine" \
+    "$HOME/Applications/Codex Dream Skin.app/Contents/Resources/engine" \
+    "$HOME/.codex/codex-dream-skin-studio" \
+    "$(cd "$SCRIPT_DIR/../../.." 2>/dev/null && pwd -P)/macos"; do
+    [ -n "$candidate" ] || continue
+    [ -f "$candidate/scripts/theme-catalog.mjs" ] || continue
+    ENGINE="$candidate"
+    return 0
+  done
+  printf '没有找到 Codex Dream Skin 引擎。请先安装 App，或设置 CODEX_DREAM_SKIN_ENGINE。\n' >&2
+  exit 1
+}
+
+find_node() {
+  local candidate=""
+  for candidate in \
+    "${NODE:-}" \
+    "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node" \
+    "/Applications/Codex.app/Contents/Resources/cua_node/bin/node" \
+    "$(command -v node 2>/dev/null || true)"; do
+    [ -x "$candidate" ] || continue
+    NODE_BIN="$candidate"
+    return 0
+  done
+  printf '没有找到 Node.js；请安装官方 Codex Desktop 或 Node.js 20+。\n' >&2
+  exit 1
+}
+
+find_engine
+find_node
+
+COMMAND="${1:-list}"
+[ "$#" -eq 0 ] || shift
+
+case "$COMMAND" in
+  list|search|install|import|create-solid)
+    exec "$NODE_BIN" "$ENGINE/scripts/theme-catalog.mjs" "$COMMAND" "$@"
+    ;;
+  image)
+    apply="false"
+    arguments=()
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+        --apply) apply="true"; shift ;;
+        *) arguments+=("$1"); shift ;;
+      esac
+    done
+    [ "$apply" = "true" ] || arguments+=(--no-apply)
+    exec /bin/bash "$ENGINE/scripts/load-image-theme-macos.sh" "${arguments[@]}"
+    ;;
+  status)
+    exec /bin/bash "$ENGINE/scripts/status-dream-skin-macos.sh" --json --deep
+    ;;
+  enable)
+    exec /bin/bash "$ENGINE/scripts/manager-command-macos.sh" enable "$@"
+    ;;
+  *)
+    printf '用法：dream-skin-theme <list|search|install|import|create-solid|image|status|enable> [参数]\n' >&2
+    exit 2
+    ;;
+esac

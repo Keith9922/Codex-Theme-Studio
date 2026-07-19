@@ -11,7 +11,7 @@ const execFileAsync = promisify(execFile);
 const scriptPath = fileURLToPath(import.meta.url);
 const here = path.dirname(scriptPath);
 const root = path.resolve(here, "..");
-const SKIN_VERSION = "1.2.0";
+const SKIN_VERSION = "1.4.0";
 const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "[::1]"]);
 const CDP_ID_PATTERN = /^[A-Za-z0-9._-]{1,200}$/;
 const MAX_ART_BYTES = 16 * 1024 * 1024;
@@ -126,6 +126,9 @@ const OPERATION_UI_CSS = `
     }
   }
 `;
+const MAX_DECORATION_BYTES = 4 * 1024 * 1024;
+const MAX_DECORATION_TOTAL_BYTES = 8 * 1024 * 1024;
+const MAX_DECORATIONS = 3;
 let staticPayloadAssets = null;
 let operationSequence = 0;
 
@@ -418,6 +421,58 @@ function assertContainedPath(rootPath, candidatePath, label) {
   throw new Error(`${label} must stay inside its theme directory`);
 }
 
+const SUPPORTED_IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp"]);
+
+function mimeForExtension(extension) {
+  if (extension === ".jpg" || extension === ".jpeg") return "image/jpeg";
+  if (extension === ".webp") return "image/webp";
+  return "image/png";
+}
+
+async function readThemeAsset(assetsRoot, filename, label, maxBytes) {
+  const requestedPath = path.join(assetsRoot, filename);
+  let assetPath;
+  try {
+    assetPath = await fs.realpath(requestedPath);
+  } catch (error) {
+    if (error.code === "ENOENT") throw new Error(`${label} is missing: ${requestedPath}`);
+    throw error;
+  }
+  assertContainedPath(assetsRoot, assetPath, label);
+  const assetStat = await fs.stat(assetPath);
+  const extension = path.extname(filename).toLowerCase();
+  if (!SUPPORTED_IMAGE_EXTENSIONS.has(extension)) {
+    throw new Error(`Unsupported ${label.toLowerCase()} format: ${extension || "missing"}`);
+  }
+  let assetHandle;
+  try {
+    assetHandle = await fs.open(assetPath, fsConstants.O_RDONLY | (fsConstants.O_NOFOLLOW ?? 0));
+  } catch (error) {
+    if (error.code === "ELOOP") throw new Error(`${label} changed into a symbolic link while loading`);
+    throw error;
+  }
+  try {
+    const openedStat = await assetHandle.stat();
+    if (
+      !assetStat.isFile()
+      || !openedStat.isFile()
+      || assetStat.dev !== openedStat.dev
+      || assetStat.ino !== openedStat.ino
+      || openedStat.size < 1
+      || openedStat.size > maxBytes
+    ) {
+      throw new Error(`${label} must be a stable non-empty file no larger than ${maxBytes} bytes`);
+    }
+    const bytes = await assetHandle.readFile();
+    if (bytes.length < 1 || bytes.length > maxBytes) {
+      throw new Error(`${label} must be a non-empty file no larger than ${maxBytes} bytes`);
+    }
+    return { bytes, extension, path: assetPath };
+  } finally {
+    await assetHandle.close();
+  }
+}
+
 async function loadTheme(themeDir) {
   const requestedRoot = themeDir ?? path.join(root, "assets");
   const configPath = path.join(requestedRoot, "theme.json");
@@ -480,6 +535,19 @@ async function loadTheme(themeDir) {
     }
     return value;
   };
+  const assetName = (value, name) => {
+    if (
+      typeof value !== "string"
+      || !value
+      || path.basename(value) !== value
+      || value === "theme.json"
+      || /[\u0000-\u001f\u007f-\u009f\u2028\u2029]/u.test(value)
+      || !SUPPORTED_IMAGE_EXTENSIONS.has(path.extname(value).toLowerCase())
+    ) {
+      throw new Error(`${configPath} has an invalid ${name} field`);
+    }
+    return value;
+  };
   const rawColors = raw.colors && typeof raw.colors === "object" && !Array.isArray(raw.colors)
     ? raw.colors : null;
   const colorKeys = [
@@ -497,17 +565,40 @@ async function loadTheme(themeDir) {
     safeArea: choice(rawArt.safeArea, "art.safeArea", ["auto", "left", "right", "center", "none"]),
     taskMode: choice(rawArt.taskMode, "art.taskMode", ["auto", "ambient", "banner", "off"]),
   };
+  if (raw.decorations !== undefined && !Array.isArray(raw.decorations)) {
+    throw new Error(`${configPath} has an invalid decorations field`);
+  }
+  if ((raw.decorations?.length ?? 0) > MAX_DECORATIONS) {
+    throw new Error(`${configPath} has more than ${MAX_DECORATIONS} decorations`);
+  }
+  const decorations = (raw.decorations ?? []).map((item, index) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      throw new Error(`${configPath} has an invalid decorations[${index}] field`);
+    }
+    const opacity = item.opacity === undefined ? 0.2 : unit(item.opacity, `decorations[${index}].opacity`);
+    return {
+      image: assetName(item.image, `decorations[${index}].image`),
+      slot: choice(item.slot, `decorations[${index}].slot`, ["ambient", "watermark", "badge"]) ?? "ambient",
+      routes: choice(item.routes, `decorations[${index}].routes`, ["home", "task", "all"]) ?? "home",
+      opacity,
+    };
+  });
+  const assetFilenames = [raw.image, ...decorations.map((item) => item.image)];
+  if (new Set(assetFilenames).size !== assetFilenames.length) {
+    throw new Error(`${configPath} has duplicate theme asset filenames`);
+  }
   const theme = {
     schemaVersion: 1,
     id: text(raw.id, "custom", 80, "id"),
     name: text(raw.name, "ChatGPT Dream Skin", 80, "name"),
     brandSubtitle: text(raw.brandSubtitle, "CODEX DREAM SKIN", 80, "brandSubtitle"),
     tagline: text(raw.tagline, "Make something wonderful.", 160, "tagline"),
-    projectPrefix: text(raw.projectPrefix, "选择项目 · ", 80, "projectPrefix"),
+    projectPrefix: text(raw.projectPrefix, "选择项目", 80, "projectPrefix"),
     projectLabel: text(raw.projectLabel, "◉  选择项目", 80, "projectLabel"),
     statusText: text(raw.statusText, "DREAM SKIN ONLINE", 80, "statusText"),
     quote: text(raw.quote, "MAKE SOMETHING WONDERFUL", 80, "quote"),
     image: raw.image,
+    decorations,
     colorMode: rawColors ? "explicit" : "auto",
     explicitColorKeys: rawColors ? colorKeys.filter((key) => Object.hasOwn(rawColors, key)) : [],
     colors: {
@@ -527,47 +618,31 @@ async function loadTheme(themeDir) {
   if (Object.values(art).some((value) => value !== undefined)) {
     theme.art = Object.fromEntries(Object.entries(art).filter(([, value]) => value !== undefined));
   }
-  const requestedImagePath = path.join(assetsRoot, theme.image);
-  let imagePath;
-  try {
-    imagePath = await fs.realpath(requestedImagePath);
-  } catch (error) {
-    if (error.code === "ENOENT") throw new Error(`Theme image is missing: ${requestedImagePath}`);
-    throw error;
-  }
-  assertContainedPath(assetsRoot, imagePath, "Theme image");
-  const imageStat = await fs.stat(imagePath);
-  const extension = path.extname(theme.image).toLowerCase();
-  if (![".png", ".jpg", ".jpeg", ".webp"].includes(extension)) {
-    throw new Error(`Unsupported theme image format: ${extension || "missing"}`);
-  }
-  let imageHandle;
-  try {
-    imageHandle = await fs.open(imagePath, fsConstants.O_RDONLY | (fsConstants.O_NOFOLLOW ?? 0));
-  } catch (error) {
-    if (error.code === "ELOOP") throw new Error("Theme image changed into a symbolic link while loading");
-    throw error;
-  }
-  try {
-    const openedStat = await imageHandle.stat();
-    if (
-      !imageStat.isFile()
-      || !openedStat.isFile()
-      || imageStat.dev !== openedStat.dev
-      || imageStat.ino !== openedStat.ino
-      || openedStat.size < 1
-      || openedStat.size > MAX_ART_BYTES
-    ) {
-      throw new Error(`Theme image must be a stable non-empty file no larger than ${MAX_ART_BYTES} bytes`);
+  const mainAsset = await readThemeAsset(assetsRoot, theme.image, "Theme image", MAX_ART_BYTES);
+  const decorationAssets = [];
+  let decorationBytes = 0;
+  for (const [index, decoration] of decorations.entries()) {
+    const asset = await readThemeAsset(
+      assetsRoot,
+      decoration.image,
+      `Theme decoration ${index + 1}`,
+      MAX_DECORATION_BYTES,
+    );
+    decorationBytes += asset.bytes.length;
+    if (decorationBytes > MAX_DECORATION_TOTAL_BYTES) {
+      throw new Error(`Theme decorations must total no more than ${MAX_DECORATION_TOTAL_BYTES} bytes`);
     }
-    const art = await imageHandle.readFile();
-    if (art.length < 1 || art.length > MAX_ART_BYTES) {
-      throw new Error(`Theme image must be a non-empty file no larger than ${MAX_ART_BYTES} bytes`);
-    }
-    return { art, assetsRoot, extension, imagePath, theme };
-  } finally {
-    await imageHandle.close();
+    decorationAssets.push({ ...decoration, ...asset });
   }
+  return {
+    art: mainAsset.bytes,
+    assetsRoot,
+    decorationAssets,
+    decorationBytes,
+    extension: mainAsset.extension,
+    imagePath: mainAsset.path,
+    theme,
+  };
 }
 
 async function loadStaticPayloadAssets() {
@@ -596,7 +671,7 @@ async function loadPayload(themeDir) {
     loadTheme(themeDir),
   ]);
   const { css, template } = staticAssets;
-  const { art, extension, theme } = loaded;
+  const { art, decorationAssets, decorationBytes, extension, theme } = loaded;
   const styleRevision = createHash("sha256").update(css).digest("hex").slice(0, 20);
   const artMetadata = readImageMetadata(art, extension);
   if (!artMetadata) {
@@ -605,9 +680,18 @@ async function loadPayload(themeDir) {
   const artKey = createHash("sha256").update(art).digest("hex").slice(0, 20);
   theme.artMetadata = artMetadata;
   theme.artKey = artKey;
-  const mime = extension === ".jpg" || extension === ".jpeg" ? "image/jpeg"
-    : extension === ".webp" ? "image/webp" : "image/png";
-  const artDataUrl = `data:${mime};base64,${art.toString("base64")}`;
+  const artDataUrl = `data:${mimeForExtension(extension)};base64,${art.toString("base64")}`;
+  theme.decorations = decorationAssets.map(({ bytes, extension: decorationExtension, path: _path, ...config }) => {
+    const metadata = readImageMetadata(bytes, decorationExtension);
+    if (!metadata) {
+      throw new Error(`Theme decoration metadata is invalid: ${config.image}`);
+    }
+    return {
+      ...config,
+      dataUrl: `data:${mimeForExtension(decorationExtension)};base64,${bytes.toString("base64")}`,
+      metadata,
+    };
+  });
   const revision = createHash("sha256")
     .update(SKIN_VERSION)
     .update(css)
@@ -623,6 +707,7 @@ async function loadPayload(themeDir) {
     .replace("__DREAM_SKIN_STYLE_REVISION_JSON__", JSON.stringify(styleRevision))
     .replace("__DREAM_SKIN_PAYLOAD_REVISION_JSON__", JSON.stringify(revision));
   return {
+    decorationBytes,
     imageBytes: art.length,
     payload,
     revision,
@@ -1801,6 +1886,8 @@ if (path.resolve(process.argv[1] || "") === path.resolve(scriptPath)) {
         themeId: loaded.theme.id,
         themeName: loaded.theme.name,
         imageBytes: loaded.imageBytes,
+        decorationBytes: loaded.decorationBytes,
+        decorationCount: loaded.theme.decorations.length,
         payloadBytes: Buffer.byteLength(loaded.payload),
         artMetadata: loaded.theme.artMetadata ?? null,
         timings: loaded.timings,

@@ -29,8 +29,11 @@ if [ -f "$STATE_PATH" ]; then
 fi
 LIVE="false"
 if [ -f "$STATE_PATH" ] && verified_cdp_endpoint "$PORT"; then
-  "$NODE" "$INJECTOR" --verify --port "$PORT" --theme-dir "$THEME_DIR" --timeout-ms 12000 >/dev/null
-  LIVE="true"
+  if "$NODE" "$INJECTOR" --verify --port "$PORT" --theme-dir "$THEME_DIR" --timeout-ms 12000 >/dev/null 2>&1; then
+    LIVE="true"
+  elif [ "$REQUIRE_LIVE" = "true" ]; then
+    fail "Dream Skin is connected, but the live injected payload does not match the staged theme."
+  fi
 fi
 [ "$REQUIRE_LIVE" = "false" ] || [ "$LIVE" = "true" ] || fail "No verified live Dream Skin session is active."
 

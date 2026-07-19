@@ -14,6 +14,7 @@
   const PAYLOAD_REVISION = __DREAM_SKIN_PAYLOAD_REVISION_JSON__;
   const THEME = themeConfig && typeof themeConfig === "object" ? themeConfig : {};
   const ART = THEME.art && typeof THEME.art === "object" ? THEME.art : {};
+  const DECORATIONS = Array.isArray(THEME.decorations) ? THEME.decorations : [];
   const ART_METADATA = THEME.artMetadata && typeof THEME.artMetadata === "object"
     ? THEME.artMetadata : null;
   const ANALYSIS_CACHE_KEY = "__CODEX_DREAM_SKIN_ANALYSIS_CACHE__";
@@ -55,14 +56,23 @@
   window[DISABLED_KEY] = false;
 
   const previous = window[STATE_KEY];
-  const artUrl = (() => {
-    const comma = artDataUrl.indexOf(",");
-    const mime = /^data:([^;,]+)/.exec(artDataUrl)?.[1] || "image/png";
-    const binary = atob(artDataUrl.slice(comma + 1));
+  const blobUrlFor = (dataUrl) => {
+    const comma = dataUrl.indexOf(",");
+    const mime = /^data:([^;,]+)/.exec(dataUrl)?.[1] || "image/png";
+    const binary = atob(dataUrl.slice(comma + 1));
     const bytes = new Uint8Array(binary.length);
     for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
     return URL.createObjectURL(new Blob([bytes], { type: mime }));
-  })();
+  };
+  const artUrl = blobUrlFor(artDataUrl);
+  const decorationItems = DECORATIONS
+    .filter((item) => item && typeof item.dataUrl === "string")
+    .map((item) => ({ ...item, url: blobUrlFor(item.dataUrl) }));
+  const decorationUrls = decorationItems.map((item) => item.url);
+  const decorationMarkup = decorationItems.map((item) =>
+    `<img class="dream-skin-decoration" src="${item.url}" alt="" data-slot="${item.slot}" ` +
+    `data-routes="${item.routes}" style="--ds-decoration-opacity:${item.opacity}">`
+  ).join("");
 
   if (previous?.observer) previous.observer.disconnect();
   if (previous?.rootObserver) previous.rootObserver.disconnect();
@@ -77,6 +87,7 @@
   if (previous?.mediaHandler && previous?.mediaQuery) {
     try { previous.mediaQuery.removeEventListener("change", previous.mediaHandler); } catch {}
   }
+  document.getElementById(CHROME_ID)?.remove();
 
   const cssString = (value) => JSON.stringify(String(value ?? ""));
 
@@ -344,7 +355,10 @@
     }
     setStyleProperty(root, "--dream-skin-name", cssString(THEME.name || "Codex Dream Skin"));
     setStyleProperty(root, "--dream-skin-tagline", cssString(THEME.tagline || "Make something wonderful."));
-    setStyleProperty(root, "--dream-skin-project-prefix", cssString(THEME.projectPrefix || "选择项目 · "));
+    const projectPrefix = String(THEME.projectPrefix || "选择项目")
+      .replace(/\s*[·•:：|/]+\s*$/u, "")
+      .trim() || "选择项目";
+    setStyleProperty(root, "--dream-skin-project-prefix", cssString(projectPrefix));
     setStyleProperty(root, "--dream-skin-project-label", cssString(THEME.projectLabel || "◉  选择项目"));
   };
 
@@ -602,7 +616,8 @@
         <div class="dream-skin-status"><i></i><span></span></div>
         <div class="dream-skin-quote"></div>
         <div class="dream-skin-particles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="dream-skin-orbit"></div>`;
+        <div class="dream-skin-orbit"></div>
+        <div class="dream-skin-decorations">${decorationMarkup}</div>`;
       document.body.appendChild(chrome);
       created = true;
       chromeParts = null;
@@ -672,6 +687,7 @@
       try { state.mediaQuery.removeEventListener("change", state.mediaHandler); } catch {}
     }
     if (state?.artUrl) URL.revokeObjectURL(state.artUrl);
+    for (const url of state?.decorationUrls ?? []) URL.revokeObjectURL(url);
     delete window[STATE_KEY];
     return true;
   };
@@ -731,6 +747,7 @@
     mediaQuery,
     mediaHandler,
     artUrl,
+    decorationUrls,
     installToken,
     analysis: artAnalysis,
     artMetadata: ART_METADATA,
@@ -744,6 +761,9 @@
   ensure({ layout: !previous || !document.getElementById(CHROME_ID) });
   metrics.firstEnsureMs = Number((now() - firstEnsureStartedAt).toFixed(3));
   if (previous?.artUrl && previous.artUrl !== artUrl) URL.revokeObjectURL(previous.artUrl);
+  for (const url of previous?.decorationUrls ?? []) {
+    if (!decorationUrls.includes(url)) URL.revokeObjectURL(url);
+  }
 
   observer.observe(document.documentElement, {
     childList: true,

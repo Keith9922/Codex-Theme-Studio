@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "preset-porcelain-paper",
+  "name": "瓷白纸页",
+  "brandSubtitle": "CODEX DREAM SKIN",
+  "tagline": "温润瓷白与一丝墨蓝，像摊开的纸页一样轻。",
+  "projectPrefix": "选择项目",
+  "projectLabel": "◉  选择项目",
+  "statusText": "DREAM SKIN ONLINE",
+  "quote": "CLEAR SPACE, CLEAR THOUGHT",
+  "image": "background.jpg",
+  "catalog": {
+    "category": "solid",
+    "description": "温润瓷白与一丝墨蓝，像摊开的纸页一样轻。",
+    "tags": [
+      "纯色",
+      "浅色",
+      "瓷白",
+      "纸张",
+      "极简"
+    ],
+    "featured": false,
+    "source": "bundled"
+  },
+  "colors": {
+    "background": "#f5f1e8",
+    "panel": "#fffdf8",
+    "panelAlt": "#eee8dc",
+    "accent": "#264b68",
+    "accentAlt": "#3e6f91",
+    "secondary": "#b57942",
+    "highlight": "#274b68",
+    "text": "#252c31",
+    "muted": "#7c7d78",
+    "line": "rgba(38, 75, 104, .2)"
+  },
+  "promoTitle": "感谢 Passion8 赞助",
+  "promoSub": "passion8.cc",
+  "promoUrl": "https://passion8.cc/register?aff=TuPe"
+}

@@ -56,6 +56,7 @@ fi
 "$NODE" "$ROOT/tests/injector-bootstrap.test.mjs"
 "$NODE" "$ROOT/tests/renderer-inject.test.mjs"
 "$NODE" "$ROOT/tests/theme-stage.test.mjs"
+"$NODE" "$ROOT/tests/theme-catalog.test.mjs"
 
 # Every bundled preset must be a valid, injectable theme pack with a preset-* id.
 for preset in "$ROOT"/presets/preset-*/; do
@@ -184,7 +185,7 @@ fi
   themes="$STATE_ROOT/themes"
   /bin/mkdir -p "$themes/custom-keepme"
   : > "$themes/custom-keepme/theme.json"
-  retired="preset-midnight-aurora preset-sakura-dawn preset-amber-dusk preset-forest-mist preset-cyber-neon preset-romantic-rose"
+  retired="preset-romantic-rose"
   for id in $retired; do
     /bin/mkdir -p "$themes/$id"
     : > "$themes/$id/retired-marker"
@@ -198,8 +199,26 @@ fi
   [ -f "$themes/custom-keepme/theme.json" ] || exit 1
   for id in $retired; do [ ! -e "$themes/$id" ] || exit 1; done
   seeded="$(/usr/bin/find "$themes" -maxdepth 1 -type d -name "preset-*" | /usr/bin/wc -l | /usr/bin/tr -d " ")"
-  [ "$seeded" -eq 2 ] || exit 1
+  [ "$seeded" -ge 11 ] || exit 1
 ' _ "$ROOT"
+
+# The native manager command surface must seed themes without launching Codex,
+# and must reject a replaced/symlinked operation lock.
+MANAGER_HOME="$TMP/manager-home"
+/usr/bin/env HOME="$MANAGER_HOME" \
+  "$ROOT/scripts/manager-command-macos.sh" seed-library >/dev/null
+[ -f "$MANAGER_HOME/Library/Application Support/CodexDreamSkinStudio/themes/preset-midnight-aurora/theme.json" ]
+MANAGER_STATE="$MANAGER_HOME/Library/Application Support/CodexDreamSkinStudio"
+MANAGER_LOCK_TARGET="$TMP/manager-lock-target"
+/bin/mkdir -p "$MANAGER_LOCK_TARGET"
+/bin/ln -s "$MANAGER_LOCK_TARGET" "$MANAGER_STATE/manager-operation.lock"
+if /usr/bin/env HOME="$MANAGER_HOME" \
+  "$ROOT/scripts/manager-command-macos.sh" seed-library >/dev/null 2>&1; then
+  printf 'Native manager unexpectedly accepted a symlinked operation lock.\n' >&2
+  exit 1
+fi
+[ -d "$MANAGER_LOCK_TARGET" ]
+/bin/rm -f "$MANAGER_STATE/manager-operation.lock"
 
 # Theme switches stage files and publish theme.json last, preserving a complete
 # active pack while the watcher is running.
@@ -822,7 +841,7 @@ CRLF_BACKUP="$TMP/config-crlf-backup.json"
 "$NODE" "$ROOT/scripts/theme-config.mjs" restore "$CRLF_CONFIG" "$CRLF_BACKUP" >/dev/null
 /usr/bin/cmp -s "$CRLF_CONFIG" "$TMP/original-crlf.toml"
 
-/usr/bin/env -u HOME /bin/bash -c '. "$1/scripts/common-macos.sh"; [ -n "$HOME" ] && [ "$SKIN_VERSION" = "1.2.0" ]' _ "$ROOT"
+/usr/bin/env -u HOME /bin/bash -c '. "$1/scripts/common-macos.sh"; [ -n "$HOME" ] && [ "$SKIN_VERSION" = "1.4.0" ]' _ "$ROOT"
 "$ROOT/scripts/doctor-macos.sh" >/dev/null
 
 printf 'PASS: syntax, payload, bundled presets, preset seeding, runtime-state safety, custom-theme, config round-trips, HOME recovery, signature, and doctor checks.\n'
