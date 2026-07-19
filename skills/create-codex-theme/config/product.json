@@ -2,12 +2,18 @@
   "schemaVersion": 1,
   "product": {
     "name": "Codex Theme Studio",
+    "website": "https://codex-theme-studio.zhangrg9922.chatgpt.site",
     "repository": "https://github.com/Keith9922/Codex-Theme-Studio",
     "latestRelease": "https://github.com/Keith9922/Codex-Theme-Studio/releases/latest",
-    "minimumAppVersion": "1.4.2"
+    "minimumAppVersion": "1.4.2",
+    "currentAppVersion": "1.4.3",
+    "directDownloads": {
+      "macosUniversal": "https://github.com/Keith9922/Codex-Theme-Studio/releases/download/v1.4.3/Codex-Theme-Studio-macOS-v1.4.3.zip"
+    }
   },
   "skill": {
     "name": "create-codex-theme",
+    "shareUrl": "https://github.com/Keith9922/Codex-Theme-Studio/tree/main/skills/create-codex-theme",
     "installDirectory": "~/.codex/skills/create-codex-theme",
     "entrypoint": "scripts/codex-theme"
   },
