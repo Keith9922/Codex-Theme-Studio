@@ -17,6 +17,19 @@
   Unofficial. Does not modify <code>.app</code> / <code>app.asar</code> / WindowsApps.
 </p>
 
+<p align="center">
+  <a href="https://codex-theme-studio.zhangrg9922.chatgpt.site"><strong>Product site</strong></a>
+  · <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest"><strong>Download the latest release</strong></a>
+  · <a href="./macos/README.md">Documentation</a>
+  · <a href="./skills/create-codex-theme/SKILL.md">Theme creation Skill</a>
+</p>
+
+<p align="center">
+  <img src="landing/public/app-preview.png" alt="Codex Theme Studio native macOS workbench" width="920">
+</p>
+
+Codex Theme Studio is an unofficial theme manager for the official Codex Desktop app. Its Universal 2 macOS workbench supports Apple Silicon and Intel Macs, and handles theme discovery, preview, refresh, hot switching, login launch, and image import without modifying the official application bundle or signature.
+
 ## Sponsors
 
 <p align="center">

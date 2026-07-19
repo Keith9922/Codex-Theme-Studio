@@ -17,6 +17,51 @@
   非 OpenAI 官方产品。不修改 <code>.app</code> / <code>app.asar</code> / WindowsApps。
 </p>
 
+<p align="center">
+  <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest">
+    <img alt="Latest release" src="https://img.shields.io/github/v/release/Keith9922/Codex-Theme-Studio?style=flat-square&color=ff654f">
+  </a>
+  <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases">
+    <img alt="Downloads" src="https://img.shields.io/github/downloads/Keith9922/Codex-Theme-Studio/total?style=flat-square&color=37c99e">
+  </a>
+  <img alt="macOS 13+" src="https://img.shields.io/badge/macOS-13%2B-111111?style=flat-square&logo=apple">
+  <img alt="Universal 2" src="https://img.shields.io/badge/Universal_2-arm64_%2B_x86__64-6f42c1?style=flat-square">
+  <a href="./macos/LICENSE">
+    <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-5d79ff?style=flat-square">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://codex-theme-studio.zhangrg9922.chatgpt.site"><strong>产品官网</strong></a>
+  · <a href="https://github.com/Keith9922/Codex-Theme-Studio/releases/latest"><strong>下载最新版</strong></a>
+  · <a href="#一分钟开始">安装指南</a>
+  · <a href="./skills/create-codex-theme/SKILL.md">制皮 Skill</a>
+  · <a href="./README.en.md">English</a>
+</p>
+
+<p align="center">
+  <img src="landing/public/app-preview.png" alt="Codex Theme Studio 原生 macOS 主题工作台" width="920">
+</p>
+
+**Codex Theme Studio** 是面向官方 Codex Desktop 的非官方主题管理器。它用一个原生 macOS 工作台统一完成主题预览、搜索、刷新、热切换、开机启动和背景图导入；皮肤通过仅监听本机的 CDP 加载，不拆包、不修改官方应用签名。
+
+## 一分钟开始
+
+1. 从 [Releases](https://github.com/Keith9922/Codex-Theme-Studio/releases/latest) 下载 `Codex-Theme-Studio-macOS-*.zip`。
+2. 解压后把 `Codex Theme Studio.app` 移到“应用程序”或 `~/Applications`；首次打开如被拦截，请在 Finder 中右键选择“打开”。
+3. 选择主题并开启皮肤。之后切换主题使用热更新，不会反复重启 Codex。
+
+> 当前公开构建采用 ad-hoc 签名、尚未 Apple 公证。支持 macOS 13+、Apple Silicon 与 Intel Mac；项目不收集主题图片，也不会把本机私人主题自动上传或打入公开 Release。
+
+## 分享亮点
+
+- **一个开关管理生命周期**：启用或关闭时只执行一次受控重启，避免重复注入造成闪退。
+- **原生主题工作台**：搜索、分类、预览、刷新本机皮肤资产，活动会话中一键热切换。
+- **开机自动恢复**：可选登录时启动、自动打开 Codex 和普通启动后的单次接管。
+- **主题可生成、可安装**：内置 `create-codex-theme` Skill，用自然语言搜索现有主题或生成新皮肤。
+- **保留官方完整交互**：侧栏、任务、插件、输入框仍是 Codex 原生控件，不是整窗截图。
+- **明确安全边界**：CDP 只绑定 `127.0.0.1`，不修改官方 `.app`、`app.asar` 或代码签名。
+
 ## 赞助商
 
 <p align="center">
@@ -157,6 +202,8 @@ macOS 13+ 可直接使用 Release 中的 `Codex Theme Studio.app`。应用内置
 Skill。用户只需描述想要的颜色、氛围、人物和构图；Skill 会先搜索现有主题，
 找不到时再生成背景、校验主题包并导入。默认不会重启 Codex，只有明确要求
 立即应用时才会启动或重启。
+
+普通用户可直接阅读 [`create-codex-theme 使用指南`](./skills/create-codex-theme/README.md)，其中包含下载、安装、一句话示例、App 刷新识别、多主题切换和必要声明。
 
 ## 快速开始
 
