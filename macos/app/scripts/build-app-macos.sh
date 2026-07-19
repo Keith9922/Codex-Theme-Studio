@@ -5,9 +5,9 @@ set -euo pipefail
 APP_ROOT="$(cd "$(dirname "$0")/.." && pwd -P)"
 MACOS_ROOT="$(cd "$APP_ROOT/.." && pwd -P)"
 OUTPUT_ROOT="${1:-$MACOS_ROOT/release}"
-APP_NAME="Codex Dream Skin.app"
+APP_NAME="Codex Theme Studio.app"
 APP_BUNDLE="$OUTPUT_ROOT/$APP_NAME"
-TEMP_BUNDLE="$OUTPUT_ROOT/.Codex Dream Skin.app.building.$$"
+TEMP_BUNDLE="$OUTPUT_ROOT/.Codex Theme Studio.app.building.$$"
 TEMP_ICONSET="$OUTPUT_ROOT/.DreamSkin.$$.iconset"
 
 cleanup() {

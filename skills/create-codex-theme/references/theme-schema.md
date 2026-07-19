@@ -1,4 +1,4 @@
-# Dream Skin 主题包规范
+# Codex Theme Studio 主题包规范
 
 主题包是一个独立文件夹，目录名必须与 `theme.json.id` 完全一致。
 

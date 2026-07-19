@@ -14,14 +14,14 @@ enum EngineClientError: LocalizedError {
   var errorDescription: String? {
     switch self {
     case .engineNotFound:
-      return "没有找到 Dream Skin 引擎。请重新安装应用。"
+      return "没有找到 Codex Theme Studio 引擎。请重新安装应用。"
     case let .scriptNotFound(name):
       return "引擎脚本缺失：\(name)"
     case let .commandFailed(_, code, output):
       let detail = output.trimmingCharacters(in: .whitespacesAndNewlines)
       return detail.isEmpty ? "操作失败（退出码 \(code)）。" : detail
     case .invalidStatus:
-      return "无法读取 Dream Skin 运行状态。"
+      return "无法读取 Codex Theme Studio 运行状态。"
     }
   }
 }
@@ -162,7 +162,7 @@ struct EngineClient {
           id: folderID,
           name: config.name,
           category: ThemeCategory(catalogValue: config.catalog?.category, themeID: folderID),
-          summary: config.catalog?.description ?? config.tagline ?? "本地 Dream Skin 主题",
+          summary: config.catalog?.description ?? config.tagline ?? "本地 Codex Theme Studio 主题",
           tags: config.catalog?.tags ?? [],
           isFeatured: config.catalog?.featured ?? false,
           directoryURL: directory,

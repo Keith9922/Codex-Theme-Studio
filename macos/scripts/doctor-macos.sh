@@ -41,7 +41,7 @@ fi
   const payload = JSON.parse(process.argv[1]);
   const result = {
     pass: true,
-    product: "Codex Dream Skin Studio",
+    product: "Codex Theme Studio",
     version: process.argv[2],
     platform: `darwin-${process.argv[3]}`,
     codexVersion: process.argv[4],

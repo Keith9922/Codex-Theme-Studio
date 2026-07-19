@@ -1,9 +1,0 @@
-interface:
-  display_name: "制作 Codex 皮肤"
-  short_description: "搜索、生成、导入并安装 Codex Dream Skin 主题"
-  icon_small: "./assets/icon.svg"
-  icon_large: "./assets/icon.svg"
-  brand_color: "#E65A47"
-  default_prompt: "使用 $create-codex-dream-skin 搜索现有主题；如果没有匹配项，就按我的要求生成、导入并安装一套新皮肤。"
-policy:
-  allow_implicit_invocation: true

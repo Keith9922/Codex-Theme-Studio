@@ -8,6 +8,8 @@ find_engine() {
   local candidate=""
   for candidate in \
     "${CODEX_DREAM_SKIN_ENGINE:-}" \
+    "/Applications/Codex Theme Studio.app/Contents/Resources/engine" \
+    "$HOME/Applications/Codex Theme Studio.app/Contents/Resources/engine" \
     "/Applications/Codex Dream Skin.app/Contents/Resources/engine" \
     "$HOME/Applications/Codex Dream Skin.app/Contents/Resources/engine" \
     "$HOME/.codex/codex-dream-skin-studio" \
@@ -17,7 +19,7 @@ find_engine() {
     ENGINE="$candidate"
     return 0
   done
-  printf '没有找到 Codex Dream Skin 引擎。请先安装 App，或设置 CODEX_DREAM_SKIN_ENGINE。\n' >&2
+  printf '没有找到 Codex Theme Studio 引擎。请先安装 App，或设置 CODEX_DREAM_SKIN_ENGINE。\n' >&2
   exit 1
 }
 
@@ -65,7 +67,7 @@ case "$COMMAND" in
     exec /bin/bash "$ENGINE/scripts/manager-command-macos.sh" enable "$@"
     ;;
   *)
-    printf '用法：dream-skin-theme <list|search|install|import|create-solid|image|status|enable> [参数]\n' >&2
+    printf '用法：codex-theme <list|search|install|import|create-solid|image|status|enable> [参数]\n' >&2
     exit 2
     ;;
 esac

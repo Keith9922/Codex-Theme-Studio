@@ -1,4 +1,4 @@
-# Codex Dream Skin Studio
+# Codex Theme Studio
 
 Unofficial macOS theme studio for the **official Codex Desktop** app.
 
@@ -34,7 +34,7 @@ Build and install it locally:
 ```
 
 The signed local app is installed at
-`~/Applications/Codex Dream Skin.app`. Its bundle contains the complete engine,
+`~/Applications/Codex Theme Studio.app`. Its bundle contains the complete engine,
 so it does not depend on SwiftBar or a global Node installation. The manager
 migrates the old one-shot Dream Skin LaunchAgent and the exact legacy SwiftBar
 plugin filename on first launch.
@@ -54,7 +54,7 @@ library, so local themes remain discoverable:
 ```
 
 The repository also includes the installable
-[`create-codex-dream-skin`](../skills/create-codex-dream-skin/SKILL.md) Skill.
+[`create-codex-theme`](../skills/create-codex-theme/SKILL.md) Skill.
 Invoke it with a desired color, atmosphere, character, or composition. It first
 searches existing skins, then generates only when no suitable match exists,
 validates the result, and imports it without restarting Codex unless explicitly
@@ -74,10 +74,10 @@ authorized.
 # ~/.codex/codex-dream-skin-studio/scripts/customize-theme-macos.sh
 
 # 4) Start/re-apply, verify, or restore via Desktop:
-#    Codex Dream Skin.command
-#    Codex Dream Skin - Customize.command
-#    Codex Dream Skin - Verify.command
-#    Codex Dream Skin - Restore.command
+#    Codex Theme Studio.command
+#    Codex Theme Studio - Customize.command
+#    Codex Theme Studio - Verify.command
+#    Codex Theme Studio - Restore.command
 
 # 5) Optional: menu bar (SwiftBar) — apply, pause, import, and switch
 ./Install\ Menu\ Bar.command

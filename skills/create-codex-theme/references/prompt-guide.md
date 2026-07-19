@@ -1,4 +1,4 @@
-# Dream Skin 生图提示词
+# Codex Theme Studio 生图提示词
 
 ## 构图目标
 

@@ -10,7 +10,7 @@ body:
         感谢反馈！请尽量填全必填项；信息过少的 Issue 可能会被关闭。
 
         **Please try self-check first / 请先自检：**
-        - **macOS:** Desktop `Codex Dream Skin - Verify.command`, or `~/.codex/codex-dream-skin-studio/scripts/verify-dream-skin-macos.sh` / `doctor-macos.sh`. If needed, try **Restore** then re-apply.
+        - **macOS:** Desktop `Codex Theme Studio - Verify.command`, or `~/.codex/codex-dream-skin-studio/scripts/verify-dream-skin-macos.sh` / `doctor-macos.sh`. If needed, try **Restore** then re-apply.
         - **Windows:** `scripts/verify-dream-skin.ps1`, then `scripts/restore-dream-skin.ps1` if you need a clean slate.
         - Search existing issues / 先搜一下是否已有相同 Issue。
 

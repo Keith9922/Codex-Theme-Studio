@@ -20,7 +20,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         backing: .buffered,
         defer: false
       )
-      created.title = "Codex Dream Skin"
+      created.title = "Codex Theme Studio"
       created.titlebarAppearsTransparent = true
       created.titleVisibility = .hidden
       created.backgroundColor = NSColor(

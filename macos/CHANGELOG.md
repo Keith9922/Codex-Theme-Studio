@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 — 2026-07-19
+
+### 改进
+
+- 项目和原生 macOS 应用统一更名为 **Codex Theme Studio**。
+- GitHub 仓库迁移至 `Keith9922/Codex-Theme-Studio`，制皮 Skill 更名为 `create-codex-theme`。
+- 保留既有状态目录、注入标记和 Bundle ID，已有主题及开机启动配置可原位升级。
+
 ## 1.4.0 — 2026-07-19
 
 ### 新增

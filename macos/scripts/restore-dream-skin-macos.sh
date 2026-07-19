@@ -66,6 +66,10 @@ if [ "$UNINSTALL" = "true" ]; then
   /bin/rm -f "$HOME/Desktop/Codex Dream Skin - Customize.command"
   /bin/rm -f "$HOME/Desktop/Codex Dream Skin - Verify.command"
   /bin/rm -f "$HOME/Desktop/Codex Dream Skin - Restore.command"
+  /bin/rm -f "$HOME/Desktop/Codex Theme Studio.command"
+  /bin/rm -f "$HOME/Desktop/Codex Theme Studio - Customize.command"
+  /bin/rm -f "$HOME/Desktop/Codex Theme Studio - Verify.command"
+  /bin/rm -f "$HOME/Desktop/Codex Theme Studio - Restore.command"
 fi
 
 printf 'ChatGPT Dream Skin was removed and the requested macOS restore actions completed successfully.\n'

@@ -157,7 +157,7 @@ final class SkinController: ObservableObject {
     panel.allowedContentTypes = [.image]
     panel.allowsMultipleSelection = false
     panel.canChooseDirectories = false
-    panel.message = "选择一张背景图；应用会生成可切换的 Dream Skin 主题。"
+    panel.message = "选择一张背景图；应用会生成可切换的 Codex Theme Studio 主题。"
     guard panel.runModal() == .OK, let imageURL = panel.url else { return }
 
     Task {

@@ -1,4 +1,4 @@
-# Codex Dream Skin
+# Codex Theme Studio
 
 <p align="center">
   <strong>中文</strong> · <a href="./README.en.md">English</a>
@@ -149,11 +149,11 @@ powershell -ExecutionPolicy Bypass -File .\windows\scripts\start-dream-skin.ps1
 
 ## macOS App 与制皮 Skill
 
-macOS 13+ 可直接使用 Release 中的 `Codex Dream Skin.app`。应用内置
+macOS 13+ 可直接使用 Release 中的 `Codex Theme Studio.app`。应用内置
 **赛博霓虹、野生博物、钴蓝工坊、朱砂信号、瓷白纸页**等零版权风险的
 程序化主题，并能搜索本机已有皮肤。
 
-仓库同时提供 [`create-codex-dream-skin`](./skills/create-codex-dream-skin/SKILL.md)
+仓库同时提供 [`create-codex-theme`](./skills/create-codex-theme/SKILL.md)
 Skill。用户只需描述想要的颜色、氛围、人物和构图；Skill 会先搜索现有主题，
 找不到时再生成背景、校验主题包并导入。默认不会重启 Codex，只有明确要求
 立即应用时才会启动或重启。
@@ -164,7 +164,7 @@ Skill。用户只需描述想要的颜色、氛围、人物和构图；Skill 会
 
 | 平台 | 目录 | 入口 |
 |------|------|------|
-| Apple Silicon / Intel Mac | [`macos/`](./macos/) | 双击 `Install Codex Dream Skin.command` |
+| Apple Silicon / Intel Mac | [`macos/`](./macos/) | 使用 Release 中的 `Codex Theme Studio.app` |
 | Windows | [`windows/`](./windows/) | `scripts/install-dream-skin.ps1` → `start-dream-skin.ps1` |
 
 更细的说明：

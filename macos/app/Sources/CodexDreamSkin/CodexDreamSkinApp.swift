@@ -42,7 +42,7 @@ struct CodexDreamSkinApp: App {
         .environmentObject(controller)
     } label: {
       Image(systemName: controller.menuSymbol)
-        .accessibilityLabel("Codex Dream Skin")
+        .accessibilityLabel("Codex Theme Studio")
     }
     .menuBarExtraStyle(.window)
   }

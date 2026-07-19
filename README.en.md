@@ -1,4 +1,4 @@
-# Codex Dream Skin
+# Codex Theme Studio
 
 <p align="center">
   <a href="./README.md">中文</a> · <strong>English</strong>
@@ -165,7 +165,7 @@ Platform scripts are ready — different plumbing, same goal: theme Codex.
 
 | Platform | Dir | Entry |
 |------|------|------|
-| Apple Silicon / Intel Mac | [`macos/`](./macos/) | Double-click `Install Codex Dream Skin.command` |
+| Apple Silicon / Intel Mac | [`macos/`](./macos/) | Use `Codex Theme Studio.app` from Releases |
 | Windows | [`windows/`](./windows/) | `scripts/install-dream-skin.ps1` → `start-dream-skin.ps1` |
 
 More detail:

@@ -4,10 +4,11 @@ set -euo pipefail
 
 APP_ROOT="$(cd "$(dirname "$0")/.." && pwd -P)"
 MACOS_ROOT="$(cd "$APP_ROOT/.." && pwd -P)"
-SOURCE_APP="${1:-$MACOS_ROOT/release/Codex Dream Skin.app}"
+SOURCE_APP="${1:-$MACOS_ROOT/release/Codex Theme Studio.app}"
 INSTALL_ROOT="$HOME/Applications"
-DESTINATION="$INSTALL_ROOT/Codex Dream Skin.app"
-TEMP_DESTINATION="$INSTALL_ROOT/.Codex Dream Skin.app.installing.$$"
+DESTINATION="$INSTALL_ROOT/Codex Theme Studio.app"
+LEGACY_DESTINATION="$INSTALL_ROOT/Codex Dream Skin.app"
+TEMP_DESTINATION="$INSTALL_ROOT/.Codex Theme Studio.app.installing.$$"
 
 [ -d "$SOURCE_APP" ] || {
   printf 'Application bundle was not found: %s\n' "$SOURCE_APP" >&2
@@ -24,6 +25,7 @@ TEMP_DESTINATION="$INSTALL_ROOT/.Codex Dream Skin.app.installing.$$"
 /usr/bin/codesign --verify --deep --strict "$TEMP_DESTINATION"
 /bin/rm -rf "$DESTINATION"
 /bin/mv "$TEMP_DESTINATION" "$DESTINATION"
+[ "$LEGACY_DESTINATION" = "$DESTINATION" ] || /bin/rm -rf "$LEGACY_DESTINATION"
 
 /usr/bin/open "$DESTINATION"
 printf '%s\n' "$DESTINATION"

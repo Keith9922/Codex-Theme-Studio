@@ -171,7 +171,7 @@ async function validatePack(directory) {
 
 async function copyPackAtomically(source, libraryRoot, force) {
   const pack = await inspectPack(source, "source");
-  if (!pack) fail(`不是有效的 Dream Skin 主题包：${source}`);
+  if (!pack) fail(`不是有效的 Codex Theme Studio 主题包：${source}`);
   await validatePack(source);
   await fs.mkdir(libraryRoot, { recursive: true, mode: 0o700 });
   const destination = path.join(libraryRoot, pack.id);
@@ -264,7 +264,7 @@ async function createSolid(options, libraryRoot) {
     id,
     name,
     brandSubtitle: "CODEX DREAM SKIN",
-    tagline: options.description ?? `${name} · 由 Dream Skin Skill 生成`,
+    tagline: options.description ?? `${name} · 由 Codex Theme Studio Skill 生成`,
     statusText: "DREAM SKIN ONLINE",
     quote: "MAKE SOMETHING WONDERFUL",
     image: "background.jpg",
@@ -340,6 +340,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  process.stderr.write(`Dream Skin 主题目录：${error.message}\n`);
+  process.stderr.write(`Codex Theme Studio 主题目录：${error.message}\n`);
   process.exit(1);
 });

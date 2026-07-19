@@ -1,11 +1,11 @@
 ---
-name: create-codex-dream-skin
-description: 搜索、生成、导入、安装和切换 Codex Dream Skin 主题。适用于用户描述想要的 Codex 外观、颜色、人物或氛围，希望查找已有皮肤、安装内置皮肤、把本地图片制成皮肤，或生成一套新主题时。支持程序化纯色主题与图像主题，并在导入前执行主题包和图片安全校验。
+name: create-codex-theme
+description: 搜索、生成、导入、安装和切换 Codex Theme Studio 主题。适用于用户描述想要的 Codex 外观、颜色、人物或氛围，希望查找已有皮肤、安装内置皮肤、把本地图片制成皮肤，或生成一套新主题时。支持程序化纯色主题与图像主题，并在导入前执行主题包和图片安全校验。
 ---
 
-# 制作 Codex Dream Skin
+# 制作 Codex Theme Studio 主题
 
-把自然语言主题要求转换成可安装的 Dream Skin 主题包。始终先搜索本机与内置目录；已有匹配项时优先复用，没有合适结果时再生成。
+把自然语言主题要求转换成可安装的 Codex Theme Studio 主题包。始终先搜索本机与内置目录；已有匹配项时优先复用，没有合适结果时再生成。
 
 ## 工作流
 
@@ -14,8 +14,8 @@ description: 搜索、生成、导入、安装和切换 Codex Dream Skin 主题�
 所有确定性操作都通过本 Skill 的脚本执行：
 
 ```bash
-scripts/dream-skin-theme list
-scripts/dream-skin-theme search --query "赛博 霓虹"
+scripts/codex-theme list
+scripts/codex-theme search --query "赛博 霓虹"
 ```
 
 搜索结果包含主题 id、名称、分类、说明和安装状态。关键词可使用中文、英文、颜色、氛围或主题 id；本机已有的私人皮肤也会出现在结果中。
@@ -23,7 +23,7 @@ scripts/dream-skin-theme search --query "赛博 霓虹"
 如果找到了匹配主题：
 
 ```bash
-scripts/dream-skin-theme install --id preset-cyber-neon
+scripts/codex-theme install --id preset-cyber-neon
 ```
 
 `install` 默认只安装/选择，不启动或重启 Codex。用户明确要求立即应用时，可添加 `--apply`；活动会话会热切换。
@@ -45,7 +45,7 @@ scripts/dream-skin-theme install --id preset-cyber-neon
 为 id 使用小写英文/数字/连字符，并以 `custom-` 开头。色值必须是 `#RRGGBB`：
 
 ```bash
-scripts/dream-skin-theme create-solid \
+scripts/codex-theme create-solid \
   --id custom-deep-ocean \
   --name "深海控制室" \
   --primary "#071521" \
@@ -64,7 +64,7 @@ scripts/dream-skin-theme create-solid \
 生成文件后，先不重启地导入：
 
 ```bash
-scripts/dream-skin-theme image \
+scripts/codex-theme image \
   --file "/absolute/path/background.png" \
   --name "雨夜电台" \
   --appearance dark \
@@ -79,7 +79,7 @@ scripts/dream-skin-theme image \
 主题包必须是一个含 `theme.json` 与同目录背景图的文件夹：
 
 ```bash
-scripts/dream-skin-theme import \
+scripts/codex-theme import \
   --source "/absolute/path/custom-theme-pack"
 ```
 
@@ -90,8 +90,8 @@ scripts/dream-skin-theme import \
 安装完成后再次搜索并核对：
 
 ```bash
-scripts/dream-skin-theme search --query "主题名称"
-scripts/dream-skin-theme status
+scripts/codex-theme search --query "主题名称"
+scripts/codex-theme status
 ```
 
 向用户报告主题名称、id、安装位置、是否已应用，以及是否发生过 Codex 重启。不要声称未公证的 App 或第三方素材可以无条件公开分发。
