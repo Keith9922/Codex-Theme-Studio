@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/codex-theme-studio-app.png" alt="Codex Theme Studio native macOS workbench" width="920">
+  <img src="landing/public/app-preview.png" alt="Codex Theme Studio native macOS workbench" width="920">
 </p>
 
 Codex Theme Studio is an unofficial theme manager for the official Codex Desktop app. Its Universal 2 macOS workbench supports Apple Silicon and Intel Macs, and handles theme discovery, preview, refresh, hot switching, login launch, and image import without modifying the official application bundle or signature.

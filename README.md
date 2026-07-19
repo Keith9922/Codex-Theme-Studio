@@ -39,7 +39,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/codex-theme-studio-app.png" alt="Codex Theme Studio 原生 macOS 主题工作台" width="920">
+  <img src="landing/public/app-preview.png" alt="Codex Theme Studio 原生 macOS 主题工作台" width="920">
 </p>
 
 **Codex Theme Studio** 是面向官方 Codex Desktop 的非官方主题管理器。它用一个原生 macOS 工作台统一完成主题预览、搜索、刷新、热切换、开机启动和背景图导入；皮肤通过仅监听本机的 CDP 加载，不拆包、不修改官方应用签名。
@@ -201,6 +201,8 @@ macOS 13+ 可直接使用 Release 中的 `Codex Theme Studio.app`。应用内置
 Skill。用户只需描述想要的颜色、氛围、人物和构图；Skill 会先搜索现有主题，
 找不到时再生成背景、校验主题包并导入。默认不会重启 Codex，只有明确要求
 立即应用时才会启动或重启。
+
+普通用户可直接阅读 [`create-codex-theme 使用指南`](./skills/create-codex-theme/README.md)，其中包含下载、安装、一句话示例、App 刷新识别、多主题切换和必要声明。
 
 ## 快速开始
 

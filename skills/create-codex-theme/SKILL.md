@@ -7,6 +7,16 @@ description: 搜索、生成、导入、安装和切换 Codex Theme Studio 主�
 
 把自然语言主题要求转换成可安装的 Codex Theme Studio 主题包。始终先搜索本机与内置目录；已有匹配项时优先复用，没有合适结果时再生成。
 
+开始工作前读取 `config/product.json`。它定义 App 最低版本、主题库位置、默认安装行为和安全边界。除非用户明确覆盖，生成完成后应自动安装到主题库，但不立即应用、不重启 Codex。
+
+面向普通用户时，推荐的完整使用方式只有三步：
+
+1. 安装 Codex Theme Studio App。
+2. 把本 Skill 文件夹放入 `~/.codex/skills/create-codex-theme`。
+3. 输入一句话，例如：`$create-codex-theme 做一套低饱和森林主题，生成后安装，暂时不要应用。`
+
+主题安装完成后，App 在打开工作台或点击“刷新皮肤”时会读取它。用户可以保留任意多套有效主题并随时切换。
+
 ## 工作流
 
 ### 1. 定位工具并搜索
@@ -16,6 +26,7 @@ description: 搜索、生成、导入、安装和切换 Codex Theme Studio 主�
 ```bash
 scripts/codex-theme list
 scripts/codex-theme search --query "赛博 霓虹"
+scripts/codex-theme config
 ```
 
 搜索结果包含主题 id、名称、分类、说明和安装状态。关键词可使用中文、英文、颜色、氛围或主题 id；本机已有的私人皮肤也会出现在结果中。

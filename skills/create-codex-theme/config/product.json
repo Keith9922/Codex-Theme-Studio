@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "name": "Codex Theme Studio",
+    "repository": "https://github.com/Keith9922/Codex-Theme-Studio",
+    "latestRelease": "https://github.com/Keith9922/Codex-Theme-Studio/releases/latest",
+    "minimumAppVersion": "1.4.2"
+  },
+  "skill": {
+    "name": "create-codex-theme",
+    "installDirectory": "~/.codex/skills/create-codex-theme",
+    "entrypoint": "scripts/codex-theme"
+  },
+  "themeLibrary": {
+    "directory": "~/Library/Application Support/CodexDreamSkinStudio/themes",
+    "discovery": "The app rescans when the workbench opens or when the user clicks Refresh Themes.",
+    "multipleThemes": true
+  },
+  "generationDefaults": {
+    "searchBeforeGenerate": true,
+    "installAfterGenerate": true,
+    "applyAfterGenerate": false,
+    "restartCodex": false,
+    "publicDistribution": false
+  },
+  "themePack": {
+    "schemaVersion": 1,
+    "requiredFiles": [
+      "theme.json",
+      "the image referenced by theme.json.image"
+    ],
+    "documentation": "references/theme-schema.md"
+  },
+  "safety": {
+    "cdpHost": "127.0.0.1",
+    "modifiesOfficialApp": false,
+    "uploadsThemeImages": false,
+    "requiresUserApprovalToApply": true,
+    "requiresRightsForPublicDistribution": true
+  }
+}

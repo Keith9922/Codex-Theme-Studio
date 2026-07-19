@@ -45,6 +45,9 @@ COMMAND="${1:-list}"
 [ "$#" -eq 0 ] || shift
 
 case "$COMMAND" in
+  config)
+    exec /bin/cat "$SCRIPT_DIR/../config/product.json"
+    ;;
   list|search|install|import|create-solid)
     exec "$NODE_BIN" "$ENGINE/scripts/theme-catalog.mjs" "$COMMAND" "$@"
     ;;
@@ -67,7 +70,7 @@ case "$COMMAND" in
     exec /bin/bash "$ENGINE/scripts/manager-command-macos.sh" enable "$@"
     ;;
   *)
-    printf '用法：codex-theme <list|search|install|import|create-solid|image|status|enable> [参数]\n' >&2
+    printf '用法：codex-theme <config|list|search|install|import|create-solid|image|status|enable> [参数]\n' >&2
     exit 2
     ;;
 esac
