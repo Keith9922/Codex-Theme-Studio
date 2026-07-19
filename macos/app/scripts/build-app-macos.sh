@@ -17,9 +17,9 @@ trap cleanup EXIT
 
 /bin/mkdir -p "$OUTPUT_ROOT"
 cd "$APP_ROOT"
-/usr/bin/swift build -c release
+/usr/bin/swift build -c release --arch arm64 --arch x86_64
 
-BINARY="$APP_ROOT/.build/release/CodexDreamSkin"
+BINARY="$APP_ROOT/.build/apple/Products/Release/CodexDreamSkin"
 [ -x "$BINARY" ] || { printf 'Built application binary is missing: %s\n' "$BINARY" >&2; exit 1; }
 
 /bin/mkdir -p \
